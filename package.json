@@ -76,7 +76,7 @@
     "test": "node scripts/test.js",
     "storybook": "storybook dev -p 6006",
     "predeploy": "npm run build-storybook",
-    "deploy-storybook": "gh-pages -d storybook-static",
+    "deploy-storybook": "gh-pages -d docs",
     "build-storybook": "storybook build"
   },
   "eslintConfig": {
