@@ -8,7 +8,6 @@ const PhoneSelector = () => {
   const maxNumber = 9999999999999;
   const halfNumber = Math.floor(minNumber + (maxNumber + minNumber) / 2);
   const [phoneNumber, setPhoneNumber] = useState(`${halfNumber}`);
-  // const [phoneNumberV, setPhoneNumberV] = useState(0);
   const [rotation, setRotation] = useState(0);
   const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -19,20 +18,22 @@ const PhoneSelector = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      phoneNumberV.current = Math.floor(phoneNumberV.current + phoneNumberA * Math.sin(toRad(rotation)));
+      const deltaV = phoneNumberA * Math.sin(toRad(rotation));
+      phoneNumberV.current = Math.floor(phoneNumberV.current + deltaV);
       setPhoneNumber((prev) => {
-        const value = Math.min(Math.max(+prev + phoneNumberV.current, minNumber), maxNumber);
+        const value = Math.min(Math.max(Math.floor(+prev + phoneNumberV.current), minNumber), maxNumber);
 
         if (value === minNumber || value === maxNumber) {
-          phoneNumberV.current = -phoneNumberV.current;
-          const value = Math.min(Math.max(phoneNumberV.current, minNumber), maxNumber);
+          if (Math.abs(phoneNumberV.current) < 1E11) {
+            phoneNumberV.current = 0;
+            console.log('zero', value);
+          } else {
+            phoneNumberV.current = -phoneNumberV.current * 0.4;
+          }
         }
 
         return `${value}`;
       });
-      // setPhoneNumberV((prev) => {
-      //   return Math.floor(prev + phoneNumberA * Math.sin(toRad(rotation)));
-      // });
     }, 100);
 
     return () => {
