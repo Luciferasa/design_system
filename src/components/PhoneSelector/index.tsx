@@ -1,65 +1,57 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import './style.scss';
 
 const PhoneSelector = () => {
+  const phoneNumberA = 1E11;
   const minNumber = 10000000000;
   const maxNumber = 9999999999999;
   const halfNumber = Math.floor(minNumber + (maxNumber + minNumber) / 2);
   const [phoneNumber, setPhoneNumber] = useState(`${halfNumber}`);
+  // const [phoneNumberV, setPhoneNumberV] = useState(0);
   const [rotation, setRotation] = useState(0);
   const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const doAnimate = () => {
-    // const degreeItem = 296666666666;
+  const phoneNumberV = useRef<number>(0);
 
-    const step = () => {
-      // const number = +phoneNumber + degreeItem;
-      if (+phoneNumber < maxNumber && inputRef.current && 'style' in inputRef.current) {
-        // setPhoneNumber(String(number));
-        inputRef.current.style.transform = `rotate(${rotation}deg)`;
-      }
+  const toRad = (deg: number) => deg * (Math.PI / 180);
 
-      // if (+phoneNumber > halfNumber) {
-      //   requestAnimationFrame(step);
-      // }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      phoneNumberV.current = Math.floor(phoneNumberV.current + phoneNumberA * Math.sin(toRad(rotation)));
+      setPhoneNumber((prev) => {
+        const value = Math.min(Math.max(+prev + phoneNumberV.current, minNumber), maxNumber);
+
+        if (value === minNumber || value === maxNumber) {
+          phoneNumberV.current = -phoneNumberV.current;
+          const value = Math.min(Math.max(phoneNumberV.current, minNumber), maxNumber);
+        }
+
+        return `${value}`;
+      });
+      // setPhoneNumberV((prev) => {
+      //   return Math.floor(prev + phoneNumberA * Math.sin(toRad(rotation)));
+      // });
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
     };
+  }, [rotation]);
 
-    requestAnimationFrame(step);
-  };
+  useEffect(() => {
+    if (!isAdvancedMode) {
+      setRotation(0);
+    }
+  }, [isAdvancedMode]);
 
   const changeRotation = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRotation(parseInt(e.target.value, 10));
-
-    doAnimate();
   };
 
   const changeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
-
-    if (isAdvancedMode) {
-      doAnimate();
-    }
-
-    // if (isAdvancedMode) {
-    //   if (+phoneNumber > halfNumber) {
-    //     setInterval(() => {
-    //       console.log(+phoneNumber)
-    //       const number = +phoneNumber + 100000;
-    //       if (+phoneNumber < maxNumber) {
-    //         setPhoneNumber(String(number));
-    //       }
-    //     }, 2000);
-    //   } else {
-    //     setInterval(() => {
-    //       const number = +phoneNumber - 100000;
-    //       if (+phoneNumber > minNumber) {
-    //         setPhoneNumber(String(number));
-    //       }
-    //     }, 2000);
-    //   }
-    // }
   };
 
   const toggleSettings = () => {
@@ -79,17 +71,6 @@ const PhoneSelector = () => {
     return '';
   };
 
-  const getRotateDegrees = () => {
-    if (!isAdvancedMode) {
-      return 0;
-    }
-    const degreeItem = 296666666666;
-    if (+phoneNumber > halfNumber) {
-      return +phoneNumber / degreeItem;
-    }
-    return -(+phoneNumber / degreeItem);
-  };
-
   return (
     <div className="wrapper">
       <div className="phone-selector">
@@ -104,6 +85,7 @@ const PhoneSelector = () => {
               onChange={changeNumber}
               value={phoneNumber}
               className={isAdvancedMode ? 'phone-selector__phone-input--advanced-mode' : 'phone-selector__phone-input'}
+              style={{ rotate: `${rotation}deg` }}
             />
           </div>
           <div className="phone-selector__settings">
