@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 
 import Catcher from '../Catcher';
-import FallingButtons from '../Falling-buttons';
+import FallingLetters from '../Falling-letters';
 
 import './style.scss';
 
@@ -23,7 +23,7 @@ const Form = () => {
 
   return (
     <>
-      <FallingButtons onDown={handleDown} />
+      <FallingLetters onDown={handleDown} />
       <form className="login-form">
         <div className="form-group">
           <label>Username:</label>

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-const FallingButtonItem = ({ id, data, deleteSymbol, onDown }) => {
+const FallingLetterItem = ({ id, data, deleteSymbol, onDown }) => {
   const [positionY, setPositionY] = useState(0);
+  const hasFired = useRef(false);
 
   useEffect(() => {
     let start = 0;
@@ -15,7 +16,8 @@ const FallingButtonItem = ({ id, data, deleteSymbol, onDown }) => {
 
       setPositionY(start);
 
-      if (start >= window.innerHeight - 30) {
+      if (start >= window.innerHeight - 30 && !hasFired.current) {
+        hasFired.current = true;
         onDown(data);
         deleteSymbol(id);
         return cancelAnimationFrame(updatePosition);
@@ -32,4 +34,4 @@ const FallingButtonItem = ({ id, data, deleteSymbol, onDown }) => {
   );
 };
 
-export default FallingButtonItem;
+export default FallingLetterItem;

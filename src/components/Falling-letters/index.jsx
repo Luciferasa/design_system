@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import FallingButtonItem from '../FallingButtonItem';
+import FallingLetterItem from '../FallingLetterItem';
 
-const FallingButtons = ({ onDown }) => {
+const FallingLetters = ({ onDown }) => {
   const [symbols, setSymbols] = useState({});
   const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.@';
 
@@ -29,7 +29,7 @@ const FallingButtons = ({ onDown }) => {
   const addNewSymbol = () => {
     const newSymbol = {
       character: characters[Math.floor(Math.random() * (characters.length - 1))],
-      positionX: window.innerWidth - 100,
+      positionX: Math.random() * window.innerWidth,
       positionY: 0,
     };
 
@@ -39,7 +39,7 @@ const FallingButtons = ({ onDown }) => {
 
   return (
     Object.entries(symbols || {}).map(([key, value]) => (
-      <FallingButtonItem
+      <FallingLetterItem
         key={key}
         id={key}
         data={value}
@@ -50,4 +50,4 @@ const FallingButtons = ({ onDown }) => {
   );
 };
 
-export default FallingButtons;
+export default FallingLetters;
