@@ -1,0 +1,119 @@
+Index: src/components/CalendarItem/style.scss
+===================================================================
+diff --git a/src/components/CalendarItem/style.scss b/src/components/CalendarItem/style.scss
+new file mode 100644
+--- /dev/null	
++++ b/src/components/CalendarItem/style.scss	
+@@ -0,0 +1,13 @@
++.circle {
++  position: relative;
++  width: 50px;
++  height: 50px;
++  border-radius: 50%;
++  background-color: blue;
++}
++
++.name {
++  position: absolute;
++  top: 25%;
++  left: 25%;
++}
+Index: src/components/CalendarItem/index.jsx
+===================================================================
+diff --git a/src/components/CalendarItem/index.jsx b/src/components/CalendarItem/index.jsx
+new file mode 100644
+--- /dev/null	
++++ b/src/components/CalendarItem/index.jsx	
+@@ -0,0 +1,59 @@
++import React, { useState, useEffect } from 'react';
++
++import './style.scss';
++
++const CalendarItem = ({ name, coordinateX, coordinateY }) => {
++  // const [positionX, setPositionX] = useState(coordinateX);
++  // const [positionY, setPositionY] = useState(coordinateY);
++  const [position, setPosition] = useState({ x: 0, y: 0 });
++  const [direction, setDirection] = useState({ x: 1, y: 1 });
++  const circleSize = 50;
++  const blockWidth = window.innerWidth; // Ширина блока
++  const blockHeight = window.innerHeight;
++
++  // useEffect(() => {
++  //   const interval = setInterval(() => {
++  //     setPositionX(prevCoordinateX => prevCoordinateX + 50);
++  //     setPositionY(prevCoordinateY => prevCoordinateY + 50);
++  //   }, 1000);
++  //
++  //   return (() => clearInterval(interval));
++  // }, []);
++
++  useEffect(() => {
++    const moveCircle = () => {
++      setPosition(prevPosition => {
++        let newX = prevPosition.x + direction.x;
++        let newY = prevPosition.y + direction.y;
++
++        // Проверяем столкновение со стенками блока
++        if (newX + circleSize >= blockWidth || newX <= 0) {
++          console.log('x')
++          setDirection(prevDirection => ({ x: -prevDirection.x, y: prevDirection.y }));
++          newX = Math.max(0, Math.min(newX, blockWidth - circleSize));
++        }
++        if (newY + circleSize >= blockHeight || newY <= 0) {
++          console.log('y')
++          setDirection(prevDirection => ({ x: prevDirection.x, y: prevDirection.y - 10}));
++          newY = Math.max(0, Math.min(newY, blockHeight - circleSize));
++        }
++
++        return { x: newX, y: newY };
++      });
++    };
++
++    const interval = setInterval(moveCircle, 10);
++
++    return () => {
++      clearInterval(interval);
++    };
++  }, []);
++
++  return (
++    <div className="circle" style={{ position: 'absolute', left: position.x, top: position.y }}>
++      <div className="name">{name}</div>
++    </div>
++  );
++};
++
++export default CalendarItem;
+Index: src/components/Calendar/index.jsx
+===================================================================
+diff --git a/src/components/Calendar/index.jsx b/src/components/Calendar/index.jsx
+new file mode 100644
+--- /dev/null	
++++ b/src/components/Calendar/index.jsx	
+@@ -0,0 +1,26 @@
++import React, { useEffect, useState } from 'react';
++
++import CalendarItem from '../CalendarItem';
++
++export const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
++const Calendar = () => {
++  const [months, setMonths] = useState(monthArr);
++
++  useEffect(() => {
++    // monthArr.map(item => { name: item, coordinateX: Math.random() * window.innerWidth })
++  }, []);
++
++  return (
++    <>
++      {months.map(item => (
++        <CalendarItem
++          name={item}
++          coordinateX={Math.random() * window.innerWidth}
++          coordinateY={Math.random() * window.innerHeight}
++        />
++      ))}
++    </>
++  );
++};
++
++export default Calendar;

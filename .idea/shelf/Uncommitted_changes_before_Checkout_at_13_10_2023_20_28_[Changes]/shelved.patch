@@ -1,0 +1,18 @@
+Index: src/App.tsx
+===================================================================
+diff --git a/src/App.tsx b/src/App.tsx
+--- a/src/App.tsx	
++++ b/src/App.tsx	
+@@ -1,10 +1,10 @@
+ import React from 'react';
+ 
+-import Form from './components/Form';
++import Calendar from './components/Calendar';
+ 
+ const App = () => (
+   <div className="App">
+-    <Form />
++    <Calendar />
+   </div>
+ );
+ 
